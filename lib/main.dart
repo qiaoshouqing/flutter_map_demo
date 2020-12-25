@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:amap_map_fluttify/amap_map_fluttify.dart';
 import 'package:flutter/material.dart';
@@ -111,17 +113,46 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
               },
             ),
+            RaisedButton(
+              child: Text('画线'),
+              onPressed: () async {
+                if (await requestPermission()) {
+                  List<LatLng> _pointList = [];
+                  _pointList = [
+                    getNextLatLng(),
+                    getNextLatLng(),
+                    getNextLatLng(),
+                    getNextLatLng(),
+                  ];
+                  var _currentPolyline =
+                  await _controller?.addPolyline(PolylineOption(
+                    latLngList: _pointList,
+                    width: 10,
+                    strokeColor: Colors.green,
+                  ));
+                }
+              },
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.ac_unit_rounded),
         onPressed: () {
-          
+
         },
       ),
     );
   }
+}
+
+final random = Random();
+LatLng getNextLatLng({LatLng center}) {
+  center ??= LatLng(39.90960, 116.397228);
+  return LatLng(
+    center.latitude + random.nextDouble(),
+    center.longitude + random.nextDouble(),
+  );
 }
 
 Future<bool> requestPermission() async {
